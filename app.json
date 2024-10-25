@@ -2,6 +2,7 @@
   "expo": {
     "name": "GK2",
     "slug": "GK2",
+    "scheme": "GK2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,17 +12,22 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.brix01.GK2",
+      "versionCode": 1,         
+      "permissions": ["NFC"]   
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3ddb1239-a7bc-4d10-a36d-1886994c678b"
+      }
     }
   }
 }
