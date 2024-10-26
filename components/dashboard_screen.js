@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
-import { Text, ScrollView, View } from 'react-native';
-import { PieChart, ContributionGraph } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
-import { globalStyles } from '../styles/globalStyles';
-import { useFocusEffect } from '@react-navigation/native';
-import { getDatabase, ref, onValue } from 'firebase/database';
-import moment from 'moment';
+import React, { useState, useCallback } from "react";
+import { Text, ScrollView, View } from "react-native";
+import { PieChart, ContributionGraph } from "react-native-chart-kit";
+import { Dimensions } from "react-native";
+import { globalStyles } from "../styles/globalStyles";
+import { useFocusEffect } from "@react-navigation/native";
+import { getDatabase, ref, onValue } from "firebase/database";
+import moment from "moment";
 
 export default function DashboardScreen() {
   const [activeCount, setActiveCount] = useState(0);
@@ -17,8 +17,8 @@ export default function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       const db = getDatabase();
-      const registrationRef = ref(db, 'registrations/');
-      
+      const registrationRef = ref(db, "registrations/");
+
       const unsubscribe = onValue(registrationRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
@@ -30,11 +30,14 @@ export default function DashboardScreen() {
           const dateCounts = {}; // To store count of registrations by date
 
           registrationArray.forEach((reg) => {
-            if (reg.currentWashCount < reg.MaxWashCount && reg.currentWashCount !== 0) {
+            if (
+              reg.currentWashCount < reg.MaxWashCount &&
+              reg.currentWashCount !== 0
+            ) {
               partial += 1;
-            } else if (reg.Status === 'Active') {
+            } else if (reg.Status === "Active") {
               active += 1;
-            } else if (reg.Status === 'Inactive') {
+            } else if (reg.Status === "Inactive") {
               inactive += 1;
             }
 
@@ -67,31 +70,33 @@ export default function DashboardScreen() {
       population: activeCount,
       color: "rgba(58, 209, 78, 1)", // Green color for Active
       legendFontColor: "#7F7F7F",
-      legendFontSize: 15
+      legendFontSize: 15,
     },
     {
       name: "Inactive",
       population: inactiveCount,
       color: "rgba(216, 15, 15, 1)", // Red color for Inactive
       legendFontColor: "#7F7F7F",
-      legendFontSize: 15
+      legendFontSize: 15,
     },
     {
       name: "Partial Use",
       population: partialCount,
       color: "rgba(255, 206, 86, 1)", // Yellow color for Partial Use
       legendFontColor: "#7F7F7F",
-      legendFontSize: 15
-    }
+      legendFontSize: 15,
+    },
   ];
 
   return (
-    <ScrollView contentContainerStyle={[globalStyles.scrollContainer, { paddingTop: 60 }]}>
+    <ScrollView
+      contentContainerStyle={[globalStyles.scrollContainer, { paddingTop: 60 }]}
+    >
       <Text style={globalStyles.titleText}>Status of registred items</Text>
-      
+
       <PieChart
         data={chartData}
-        width={Dimensions.get('window').width - 40}
+        width={Dimensions.get("window").width - 40}
         height={220}
         chartConfig={{
           backgroundGradientFrom: "#1E2923",
@@ -106,12 +111,12 @@ export default function DashboardScreen() {
       />
 
       <Text style={globalStyles.titleText}>Overview of registrations</Text>
-      
+
       <ContributionGraph
         values={contributions}
         endDate={new Date()}
         numDays={90} // Adjust to show the desired range of dates
-        width={Dimensions.get('window').width - 40}
+        width={Dimensions.get("window").width - 40}
         height={220}
         chartConfig={{
           backgroundGradientFrom: "#ffffff",
@@ -134,11 +139,19 @@ export default function DashboardScreen() {
         }}
       />
 
-
       {/* Conditionally render selected day's data */}
       {selectedDay && (
-        <View style={{ marginTop: 10, padding: 10, backgroundColor: '#f0f0f0', borderRadius: 8 }}>
-          <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Date: {selectedDay.date}</Text>
+        <View
+          style={{
+            marginTop: 10,
+            padding: 10,
+            backgroundColor: "#f0f0f0",
+            borderRadius: 8,
+          }}
+        >
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            Date: {selectedDay.date}
+          </Text>
           <Text>Registrations made {selectedDay.count}</Text>
         </View>
       )}

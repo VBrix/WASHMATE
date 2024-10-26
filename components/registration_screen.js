@@ -1,9 +1,17 @@
-import { Alert, TextInput, View, TouchableOpacity, Text } from 'react-native';
-import { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { getDatabase, ref, push, get, query, orderByChild, equalTo } from 'firebase/database';
-import NfcManager, { NfcTech } from 'react-native-nfc-manager';
-import { globalStyles } from '../styles/globalStyles';
+import { Alert, TextInput, View, TouchableOpacity, Text } from "react-native";
+import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import {
+  getDatabase,
+  ref,
+  push,
+  get,
+  query,
+  orderByChild,
+  equalTo,
+} from "firebase/database";
+import NfcManager, { NfcTech } from "react-native-nfc-manager";
+import { globalStyles } from "../styles/globalStyles";
 
 NfcManager.start();
 
@@ -12,12 +20,12 @@ export default function RegistrationScreen() {
   const navigation = useNavigation();
 
   const initialState = {
-    id: '',
-    createDate: '',
+    id: "",
+    createDate: "",
     currentWashCount: 0,
     MaxWashCount: 0,
-    LastWashDate: '',
-    Status: 'Active',
+    LastWashDate: "",
+    Status: "Active",
   };
 
   const [newRegistration, setNewRegistration] = useState(initialState);
@@ -38,11 +46,11 @@ export default function RegistrationScreen() {
 
     initNFC();
 
-    const unsubscribeFocus = navigation.addListener('blur', async () => {
+    const unsubscribeFocus = navigation.addListener("blur", async () => {
       try {
         await NfcManager.cancelTechnologyRequest();
       } catch (error) {
-        console.log('Error cancelling NFC request:', error);
+        console.log("Error cancelling NFC request:", error);
       }
     });
 
@@ -51,7 +59,7 @@ export default function RegistrationScreen() {
         try {
           await NfcManager.cancelTechnologyRequest();
         } catch (error) {
-          console.log('Error during NFC clean-up:', error);
+          console.log("Error during NFC clean-up:", error);
         }
       })();
 
@@ -67,8 +75,8 @@ export default function RegistrationScreen() {
   };
 
   const checkIfRegistered = async (tagId) => {
-    const registrationRef = ref(db, 'registrations/');
-    const queryRef = query(registrationRef, orderByChild('id'), equalTo(tagId));
+    const registrationRef = ref(db, "registrations/");
+    const queryRef = query(registrationRef, orderByChild("id"), equalTo(tagId));
 
     const snapshot = await get(queryRef);
     return snapshot.exists();
@@ -86,7 +94,7 @@ export default function RegistrationScreen() {
       const tag = await NfcManager.getTag();
 
       if (!tag || !tag.id) {
-        Alert.alert('No NFC Tag detected. Try again.');
+        Alert.alert("No NFC Tag detected. Try again.");
         return;
       }
 
@@ -96,7 +104,9 @@ export default function RegistrationScreen() {
       const alreadyRegistered = await checkIfRegistered(tagId);
 
       if (alreadyRegistered) {
-        Alert.alert('This tag has been scanned before and cannot be registered again.');
+        Alert.alert(
+          "This tag has been scanned before and cannot be registered again."
+        );
         return;
       }
 
@@ -107,15 +117,14 @@ export default function RegistrationScreen() {
       }));
 
       await handleSavedRegistration(tagId);
-
     } catch (ex) {
-      console.warn('NFC scan failed', ex);
-      Alert.alert('NFC Scan failed. Please try again.');
+      console.warn("NFC scan failed", ex);
+      Alert.alert("NFC Scan failed. Please try again.");
     } finally {
       try {
         await NfcManager.cancelTechnologyRequest();
       } catch (error) {
-        console.log('Error cancelling NFC request in finally block:', error);
+        console.log("Error cancelling NFC request in finally block:", error);
       } finally {
         setNfcRequesting(false);
       }
@@ -123,17 +132,17 @@ export default function RegistrationScreen() {
   };
 
   const handleSavedRegistration = async (tagId) => {
-
     newRegistration.createDate = new Date().toISOString();
 
-    const { MaxWashCount, currentWashCount, createDate, LastWashDate, Status } = newRegistration;
+    const { MaxWashCount, currentWashCount, createDate, LastWashDate, Status } =
+      newRegistration;
 
     if (MaxWashCount === 0) {
-      Alert.alert('Please enter a value for MaxWashCount.');
+      Alert.alert("Please enter a value for MaxWashCount.");
       return;
     }
 
-    const registrationRef = ref(db, 'registrations/');
+    const registrationRef = ref(db, "registrations/");
 
     const newRegistrationData = {
       id: tagId,
@@ -146,7 +155,7 @@ export default function RegistrationScreen() {
 
     await push(registrationRef, newRegistrationData)
       .then(() => {
-        Alert.alert('New item successfully added to the database!');
+        Alert.alert("New item successfully added to the database!");
         setNewRegistration(initialState);
       })
       .catch((error) => {
@@ -157,21 +166,24 @@ export default function RegistrationScreen() {
   return (
     <View style={globalStyles.container}>
       <TextInput
-        placeholder="Enter Max Wash Count"
+        placeholder='Enter Max Wash Count'
         value={newRegistration.MaxWashCount.toString()}
-        onChangeText={(text) => handleInputChange('MaxWashCount', text)}
+        onChangeText={(text) => handleInputChange("MaxWashCount", text)}
         style={globalStyles.input}
-        keyboardType="numeric"
+        keyboardType='numeric'
       />
 
-      <TouchableOpacity style={globalStyles.touchable} onPress={handleNfcScanAndSave}>
+      <TouchableOpacity
+        style={globalStyles.touchable}
+        onPress={handleNfcScanAndSave}
+      >
         <Text style={globalStyles.touchableText}>Scan NFC Tag and Save</Text>
       </TouchableOpacity>
 
       {/* New Button to Navigate to Registration Guide Screen */}
       <TouchableOpacity
         style={globalStyles.touchable}
-        onPress={() => navigation.navigate('Registration Guide')}
+        onPress={() => navigation.navigate("Registration Guide")}
       >
         <Text style={globalStyles.touchableText}>Go to Registration Guide</Text>
       </TouchableOpacity>
