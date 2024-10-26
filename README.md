@@ -1,3 +1,5 @@
+* Til programmeringen af produktet er github copilot anvendt *
+
 Forudsætning for test af NFC funktionaliteten.
 	Da implementationen af NFC tekonolgi ikke kan køres på Expo Go kræver kørsel af opgaven potientielt en del opsætning, har lavet en guide nedenfor.
  	 Der er dog 1 krav, hvis scanning af NFC tags skal testes
