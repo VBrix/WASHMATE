@@ -82,4 +82,4 @@ Installationsvejledning
 		
 	4.2.6 Åben appen på andriod enheden.
 
-Good luck :))
+i know its a bit fucked so good luck :))
