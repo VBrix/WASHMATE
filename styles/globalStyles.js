@@ -1,15 +1,14 @@
-// globalStyles.js
-
 import { StyleSheet } from "react-native";
 
 export const colors = {
-  primary: "#007bff", // Primary blue for touchable elements
-  background: "#ffffff", // General background color
-  secondaryBackground: "#f8f9fa", // Lighter background for certain screens
-  text: "#333", // Standard text color
-  touchableText: "#ffffff", // Text color for touchable elements
-  inputBorder: "gray", // Border color for inputs
+  primary: "#6200EE", // Purple accent
+  background: "#F4F5F7", // Light gray
+  secondaryBackground: "#FFFFFF", // White
+  text: "#1A1A1A", // Darker gray for better contrast
+  touchableText: "#FFFFFF", // White for buttons
+  inputBorder: "#C4C4C4", // Light gray for input borders
 };
+
 
 export const globalStyles = StyleSheet.create({
   // Containers
@@ -32,51 +31,96 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.secondaryBackground,
   },
-
-  // Text
+  card: {
+    backgroundColor: colors.secondaryBackground,
+    borderRadius: 12,
+    padding: 15,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: colors.inputBorder,
+    marginVertical: 10,
+  },
+  
+  // Typography
   titleText: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontWeight: "600",
     color: colors.text,
     marginBottom: 20,
   },
   welcomeText: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "400",
     color: colors.text,
     marginBottom: 20,
   },
   touchableText: {
     color: colors.touchableText,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
-  stepText: {
-    fontSize: 16,
-    marginVertical: 10,
-    textAlign: "left",
-    width: "100%",
+  header: {
+    fontSize: 24,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  error: {
+    color: "red",
+    marginBottom: 20,
   },
 
-  // Touchable elements
+  // Buttons and touchable elements
   touchable: {
     backgroundColor: colors.primary,
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    width: 200, // Added fixed width
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    padding: 10,
   },
 
   // Input fields
   input: {
-    height: 40,
-    width: "80%",
+    height: 50,
+    width: "100%",
     borderColor: colors.inputBorder,
     borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     marginBottom: 20,
+    backgroundColor: "#FFFFFF",
+  },
+
+  // Dropdown and picker
+  pickerContainer: {
+    width: "100%",
+    height: 50,
+    marginTop: 10,
+  },
+  dropdown: {
+    position: "absolute",
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
   },
 });
