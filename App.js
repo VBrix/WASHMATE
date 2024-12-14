@@ -1,20 +1,18 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { getApps, initializeApp } from "firebase/app";
-import { enableScreens } from "react-native-screens";
-import { SafeAreaProvider } from "react-native-safe-area-context"; // Import SafeAreaProvider
+import { getAuth, initializeAuth,onAuthStateChanged, getReactNativePersistence } from "firebase/auth";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
-import DashboardScreen from "./components/dashboard_screen";
-import HomepageScreen from "./components/homepage_screen";
-import RegistrationScreen from "./components/registration_screen";
-import WashScreen from "./components/wash_screen";
-import RegistrationGuideScreen from "./components/registrationGuide_screen";
-
-enableScreens();
-
+import HomepageScreen from "./screens/homepage_screen";
+import RegistrationGuideScreen from "./screens/registrationGuide_screen";
+import AuthScreen from "./screens/auth_screen";
+import AdminScreen from "./screens/admin_screen"; 
+import KontrollørScreen from "./screens/kontrollør_screen";
+import RengøringsansvarligScreen from "./screens/rengøringsmedarbejder_screen";
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBfp-lh5IiQWONkrK-iG4j8rTRmf4AChb0",
   authDomain: "intgk1.firebaseapp.com",
@@ -26,75 +24,78 @@ const firebaseConfig = {
 };
 
 export default function App() {
+  const [user, setUser] = useState({ loggedIn: false });
+  let auth;
+
+  // Initialize Firebase
   if (getApps().length < 1) {
-    initializeApp(firebaseConfig);
-    console.log("Firebase On!");
+    const app = initializeApp(firebaseConfig);
+    auth = initializeAuth(app, {
+      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+    });
+    console.log("Firebase Initialized!");
+  } else {
+    auth = getAuth();
   }
 
-  const Tab = createBottomTabNavigator();
+  // Monitor authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser({ loggedIn: !!currentUser });
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Stack Navigator
   const Stack = createStackNavigator();
-
-  const StackNavigation = () => {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen
-          name='Homepage'
-          component={HomepageScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='New Registration'
-          component={RegistrationScreen}
-          options={{
-            headerTitle: "", // Hide title, keep back arrow
-            headerLeftContainerStyle: { paddingLeft: 20, paddingTop: 100 },
-            headerTintColor: "#000",
-          }}
-        />
-        <Stack.Screen
-          name='Scan Wash'
-          component={WashScreen}
-          options={{
-            headerTitle: "", // Hide title, keep back arrow
-            headerLeftContainerStyle: { paddingLeft: 20, paddingTop: 100 },
-            headerTintColor: "#000",
-          }}
-        />
-        <Stack.Screen
-          name='Registration Guide'
-          component={RegistrationGuideScreen}
-          options={{
-            headerTitle: "", // Hide title, keep back arrow
-            headerLeftContainerStyle: { paddingLeft: 20, paddingTop: 100 },
-            headerTintColor: "#000",
-          }}
-        />
-      </Stack.Navigator>
-    );
-  };
-
-  const TabNavigation = () => {
-    return (
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <Tab.Navigator>
-            <Tab.Screen
-              name={"Home"}
-              component={StackNavigation}
-              options={{ headerShown: null }}
-            />
-            <Tab.Screen
-              name={"Dashboard"}
-              component={DashboardScreen}
-              options={{ headerTitle: "", headerTransparent: true }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </SafeAreaProvider>
-    );
-  };
-
-  return <TabNavigation />;
+  const StackNavigation = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name='Homepage'
+        component={HomepageScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name='Registration Guide'
+        component={RegistrationGuideScreen}
+        options={{
+          headerTitle: "",
+          headerLeftContainerStyle: { paddingLeft: 20, paddingTop: 100 },
+          headerTintColor: "#000",
+        }}
+      />
+      <Stack.Screen
+        name='Admin'
+        component={AdminScreen}
+        options={{
+          headerTitle: "",
+          headerTintColor: "#000",
+        }}
+      />
+      <Stack.Screen
+        name='Kontrollør'
+        component={KontrollørScreen}
+        options={{
+          headerTitle: "",
+          headerTintColor: "#000",
+        }}
+      />
+      <Stack.Screen
+        name='Rengøringsansvarlig'
+        component={RengøringsansvarligScreen}
+        options={{
+          headerTitle: "",
+          headerLeftContainerStyle: { paddingLeft: 20, paddingTop: 100 },
+          headerTintColor: "#000",
+        }}
+      />
+    </Stack.Navigator>
+  );
+  return (
+    <NavigationContainer>
+      {user.loggedIn ? <StackNavigation /> : <AuthScreen />}
+    </NavigationContainer>
+  );
 }
 
 const styles = StyleSheet.create({
