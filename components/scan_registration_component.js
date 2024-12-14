@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Alert } from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { View, Alert, TouchableOpacity, Text } from "react-native";
+import { TextInput } from "react-native-paper";
 import { getDatabase, ref, push, get, query, orderByChild, equalTo } from "firebase/database";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
 import { globalStyles, colors } from "../styles/globalStyles";
 
 NfcManager.start();
+console.log("NFC Manager started");
 
 export default function RegistrationComponent() {
   const db = getDatabase();
@@ -71,8 +72,10 @@ export default function RegistrationComponent() {
 
   // Function to start listening for NFC tag to save new registration
   const handleNfcScanAndSave = async () => {
+    console.log("handleNfcScanAndSave called");
     try {
       if (nfcRequesting) {
+        console.log("NFC request already in progress");
         return;
       }
       // Starts listening for NFC tags 
@@ -83,11 +86,13 @@ export default function RegistrationComponent() {
 
       if (!tag || !tag.id) {
         Alert.alert("No NFC Tag detected. Try again.");
+        console.log("No NFC Tag detected");
         return;
       }
 
       const tagId = tag.id;
       Alert.alert(`NFC Tag Found: ${tagId}`);
+      console.log(`NFC Tag Found: ${tagId}`);
 
       // Check if tag has been registered before
       const alreadyRegistered = await checkIfRegistered(tagId);
@@ -95,6 +100,7 @@ export default function RegistrationComponent() {
         Alert.alert(
           "This tag has been scanned before and cannot be registered again."
         );
+        console.log("Tag already registered");
         return;
       }
 
@@ -173,7 +179,6 @@ export default function RegistrationComponent() {
         onChangeText={(text) => handleInputChange("MaxWashCount", text)}
         style={globalStyles.input}
         keyboardType="numeric"
-        mode="outlined"
         outlineColor={colors.inputBorder}
       />
 
@@ -182,18 +187,19 @@ export default function RegistrationComponent() {
         value={newRegistration.ProductNumber}
         onChangeText={(text) => handleInputChange("ProductNumber", text)}
         style={globalStyles.input}
-        mode="outlined"
+        keyboardType="numeric"
         outlineColor={colors.inputBorder}
       />
 
-      <Button
-        mode="contained"
-        onPress={handleNfcScanAndSave}
-        style={globalStyles.button}
-        labelStyle={globalStyles.touchableText}
+      <TouchableOpacity
+        style={[globalStyles.scanTouchable, { marginBottom: 20 }]}
+        onPress={() => {
+          console.log("Scan NFC Tag and Save button pressed");
+          handleNfcScanAndSave();
+        }}
       >
-        Scan NFC Tag and Save
-      </Button>
+        <Text style={globalStyles.touchableText}>Scan NFC Tag and Save</Text>
+      </TouchableOpacity>
     </View>
   );
 }

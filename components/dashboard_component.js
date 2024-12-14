@@ -1,11 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Text, View, Dimensions } from "react-native";
+import { Text, View, Dimensions, ScrollView, TouchableOpacity } from "react-native";
 import { PieChart, ContributionGraph } from "react-native-chart-kit"; // Used for charts
 import { globalStyles } from "../styles/globalStyles";
 import { useFocusEffect } from "@react-navigation/native"; // like useEffect but only runs when screen is focused
 import { getDatabase, ref, onValue } from "firebase/database";
 import moment from "moment"; // used for date formatting
 import { getAuth } from "firebase/auth";
+import { LogOut } from "../components/log_out_component"; 
+import { useNavigation } from "@react-navigation/native";
 
 export const Dashboard = () => {
   const [activeCount, setActiveCount] = useState(0);
@@ -13,6 +15,7 @@ export const Dashboard = () => {
   const [partialCount, setPartialCount] = useState(0);
   const [contributions, setContributions] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null);
+  const navigation = useNavigation();
 
   const auth = getAuth();
 
@@ -113,13 +116,13 @@ export const Dashboard = () => {
   ];
 
   return (
-    <View>
-      <View style={globalStyles.card}>
+    <ScrollView>
+      <View style={globalStyles.dashboardChart}>
         <Text style={globalStyles.titleText}>Status of registered items</Text>
         <PieChart
           data={chartData}
-          width={Dimensions.get("window").width - 60}
-          height={220}
+          width={Dimensions.get("window").width - 100} // Adjusted width to make it smaller
+          height={180} // Adjusted height to make it smaller
           chartConfig={{
             backgroundGradientFrom: "#fff",
             backgroundGradientTo: "#fff",
@@ -133,13 +136,13 @@ export const Dashboard = () => {
         />
       </View>
 
-      <View style={globalStyles.card}>
+      <View style={globalStyles.dashboardChart}>
         <Text style={globalStyles.titleText}>Overview of registrations</Text>
         <ContributionGraph
           values={contributions}
           endDate={new Date()}
           numDays={90}
-          width={Dimensions.get("window").width - 60}
+          width={Dimensions.get("window").width - 80} // Adjusted width
           height={220}
           chartConfig={{
             backgroundGradientFrom: "#fff",
@@ -149,6 +152,7 @@ export const Dashboard = () => {
             strokeWidth: 2,
           }}
           backgroundColor={"#ffffff"}
+          style={{ alignSelf: "center" }} // Center the ContributionGraph
           // Used to display number of registrations on press of the given day
           onDayPress={(value) => {
             if (value?.date) {
@@ -163,13 +167,24 @@ export const Dashboard = () => {
       </View>
 
       {selectedDay && (
-        <View style={[globalStyles.card, { backgroundColor: "#f9f9f9" }]}>
+        <View
+          style={[globalStyles.dashboardChart, { backgroundColor: "#f9f9f9" }]}
+        >
           <Text style={{ fontSize: 16, fontWeight: "bold" }}>
             Date: {selectedDay.date}
           </Text>
           <Text>Registrations made: {selectedDay.count}</Text>
         </View>
       )}
-    </View>
+
+      <View style={{ alignItems: "center" }}>
+        <TouchableOpacity
+          style={[globalStyles.logoutTouchable]}
+          onPress={() => LogOut(navigation)}
+        >
+          <Text style={globalStyles.touchableText}>Log Out</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };

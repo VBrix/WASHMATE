@@ -1,12 +1,12 @@
-import { Text, View, Alert } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { Text, View, Alert, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { globalStyles } from "../styles/globalStyles";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getDatabase, ref, push } from "firebase/database"; 
 
-export default function SignUpComponent() {
+export default function SignUpComponent({ navigation }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,6 +15,12 @@ export default function SignUpComponent() {
     const [isCompleted, setCompleted] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const auth = getAuth();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: '',
+        });
+    }, [navigation]);
 
     // User object for DB /Users
     const userTypes = [
@@ -75,50 +81,60 @@ export default function SignUpComponent() {
     };
 
     return (
-        <View style={globalStyles.container}>
-            <Text style={globalStyles.header}>Sign up</Text>
-            <TextInput
-                style={globalStyles.input}
-                placeholder="name"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={globalStyles.input}
-                placeholder="email"
-                value={email}
-                onChangeText={setEmail}
-            />
-            <TextInput
-                style={globalStyles.input}
-                placeholder="password"
-                value={password}
-                secureTextEntry
-                onChangeText={setPassword}
-            />
-            <TextInput
-                style={globalStyles.input}
-                placeholder="company"
-                value={company}
-                onChangeText={setCompany}
-            />
-            <View style={globalStyles.pickerContainer}>
-                <SelectList
-                    setSelected={(val) => setUserType(val)}
-                    data={userTypes}
-                    save="value"
-                    placeholder='Select user type'
-                    dropdownStyles={globalStyles.dropdown}
-                    search={false} 
-                    animation={{ duration: 10 }}
-                />
-            </View>
-            {errorMessage && (
-                <Text style={globalStyles.error}>Error: {errorMessage}</Text>
-            )}
-            <Button mode="contained" onPress={handleSubmit} style={globalStyles.button}>
-                Create user
-            </Button>
-        </View>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior="height"
+        >
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <View style={globalStyles.container}>
+                    <Text style={globalStyles.header}>Sign up</Text>
+                    <TextInput
+                        style={globalStyles.input}
+                        placeholder="name"
+                        value={name}
+                        onChangeText={setName}
+                    />
+                    <TextInput
+                        style={globalStyles.input}
+                        placeholder="email"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                    <TextInput
+                        style={globalStyles.input}
+                        placeholder="password"
+                        value={password}
+                        secureTextEntry
+                        onChangeText={setPassword}
+                    />
+                    <TextInput
+                        style={globalStyles.input}
+                        placeholder="company"
+                        value={company}
+                        onChangeText={setCompany}
+                    />
+                    <View style={globalStyles.pickerContainer}>
+                        <SelectList
+                            setSelected={(val) => setUserType(val)}
+                            data={userTypes}
+                            save="value"
+                            placeholder='Select user type'
+                            dropdownStyles={[globalStyles.dropdown, { zIndex: 1 }]}
+                            search={false} 
+                            animation={{ duration: 10 }}
+                        />
+                    </View>
+                    {errorMessage && (
+                        <Text style={globalStyles.error}>Error: {errorMessage}</Text>
+                    )}
+                    <TouchableOpacity
+                        style={[globalStyles.touchable, {marginTop: 40, zIndex: 0 }]}
+                        onPress={handleSubmit}
+                    >
+                        <Text style={globalStyles.touchableText}>Create user</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }

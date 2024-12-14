@@ -33,27 +33,29 @@ export default function RengøringsansvarligScreen() {
   return (
     <View style={[globalStyles.container, { padding: 20 }]}>
       <Text style={[globalStyles.welcomeText, { marginBottom: 20 }]}>
-        Welcome to WASHMATE, {displayName}!
+         Welcome to <Text style={{ color: "rgb(132, 189, 57)" }}>WASH</Text><Text style={{ color: "#000" }}>MATE</Text>, {displayName}!
       </Text>
 
       {/* View type for live animation*/}
       <Animated.View style={[globalStyles.container, animatedStyles, { padding: 20 }]}>
         <TouchableOpacity
-          style={[globalStyles.touchable, { marginBottom: 20 }]}
+          style={[globalStyles.scanTouchable, { marginBottom: 20 }]}
           onPress={() =>
             ScanWashComponent(borderAnim, borderWidthAnim, setBorderColor)
           }
         >
           <Text style={globalStyles.touchableText}>Scan Wash</Text>
         </TouchableOpacity>
-        
+      </Animated.View>
+
+      <View>
         <TouchableOpacity
-          style={globalStyles.touchable}
+          style={globalStyles.logoutTouchable}
           onPress={() => LogOut(navigation)}
         >
           <Text style={globalStyles.touchableText}>Log Out</Text>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
     </View>
   );
 }

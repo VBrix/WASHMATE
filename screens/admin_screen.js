@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native";
 import { globalStyles } from "../styles/globalStyles";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
@@ -24,18 +24,30 @@ export default function AdminScreen() {
   }, []);
 
   return (
-    <View style={[globalStyles.container, { padding: 20 }]}>
-      <Text style={[globalStyles.welcomeText, { marginBottom: 20 }]}>
-        Welcome to WASHMATE, {displayName}!
-      </Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="height"
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={[globalStyles.container, { padding: 20, justifyContent: "space-between" }]}>
+          <Text style={[globalStyles.welcomeText, { marginBottom: 20 }]}>
+            Welcome to <Text style={{ color: "rgb(132, 189, 57)" }}>WASH</Text><Text style={{ color: "#000" }}>MATE</Text>, {displayName}!
+          </Text>
 
-      <RegistrationComponent />
-      <TouchableOpacity
-        style={[globalStyles.touchable, { marginTop: 20 }]}
-        onPress={() => LogOut(navigation)}
-      >
-        <Text style={globalStyles.touchableText}>Log Out</Text>
-      </TouchableOpacity>
-    </View>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <RegistrationComponent />
+          </View>
+
+          <View>
+            <TouchableOpacity
+              style={[globalStyles.logoutTouchable, { marginBottom: 20 }]}
+              onPress={() => LogOut(navigation)}
+            >
+              <Text style={globalStyles.touchableText}>Log Out</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

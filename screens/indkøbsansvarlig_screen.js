@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text, ScrollView } from "react-native";
+import { Text, ScrollView } from "react-native";
 import { globalStyles } from "../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
 
 // Import components
-import { LogOut } from "../components/log_out_component"; 
 import { Dashboard } from "../components/dashboard_component"; 
 
 export default function IndkøbsansvarligScreen() {
@@ -21,19 +20,11 @@ export default function IndkøbsansvarligScreen() {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={[globalStyles.container, { padding: 20 }]}>
-      <Text style={[globalStyles.welcomeText, { marginBottom: 20 }]}>
-        Welcome to WASHMATE, {displayName}!
+    <ScrollView contentContainerStyle={[globalStyles.container]}>
+      <Text style={[globalStyles.welcomeText]}>
+         Welcome to <Text style={{ color: "rgb(132, 189, 57)" }}>WASH</Text><Text style={{ color: "#000" }}>MATE</Text>, {displayName}!
       </Text>
-  
-      <Dashboard />
-  
-      <TouchableOpacity
-        style={[globalStyles.touchable, { marginTop: 20 }]}
-        onPress={() => LogOut(navigation)}
-      >
-        <Text style={globalStyles.touchableText}>Log Out</Text>
-      </TouchableOpacity>
+      <Dashboard/>
     </ScrollView>
   );
 }
